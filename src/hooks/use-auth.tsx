@@ -38,12 +38,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       const token = localStorage.getItem('token');
       const userData = localStorage.getItem('user');
       
+      console.log('Initial Check - Token:', !!token);
+      console.log('Initial Check - User Data:', userData);
+      
       if (token && userData) {
         try {
           // Parse stored user data
           const parsedUser = JSON.parse(userData);
           setUser(parsedUser);
+          console.log('Restored User:', parsedUser);
         } catch (error) {
+          console.error('User data parse error:', error);
           // Invalid user data, clear localStorage
           localStorage.removeItem('token');
           localStorage.removeItem('user');
@@ -59,7 +64,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
+      console.log('Attempting login for:', email);
       const response = await authAPI.login(email, password);
+      
+      console.log('Login Response:', response);
       
       // Save token and user info
       localStorage.setItem('token', response.token);

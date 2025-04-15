@@ -17,6 +17,8 @@ import { AuthLayout } from '@/components/layout/auth-layout';
 import { useAuth } from '@/hooks/use-auth';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { Navigate } from 'react-router-dom';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { InfoIcon } from 'lucide-react';
 
 // Define form schema
 const formSchema = z.object({
@@ -54,6 +56,17 @@ const LoginPage = () => {
       title="University Exam Management"
       description="Login to access your account"
     >
+      <Alert className="mb-4 bg-blue-50">
+        <InfoIcon className="h-4 w-4" />
+        <AlertDescription className="text-sm">
+          <strong>Demo accounts:</strong><br />
+          student@university.edu <br />
+          instructor@university.edu <br />
+          secretary@university.edu <br />
+          (any password will work)
+        </AlertDescription>
+      </Alert>
+      
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
           <FormField

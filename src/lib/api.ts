@@ -113,18 +113,19 @@ export const authAPI = {
   login: async (email: string, password: string) => {
     console.log('Mock login with:', email);
     
-    // Simple logic to return mock user based on email
-    if (email.includes('student')) {
+    // For demo purposes, we'll be more lenient with login emails
+    // this allows users to try the app more easily
+    if (email.includes('student') || email === 'student@university.edu') {
       return { 
         user: mockUsers.student, 
         token: 'mock-student-token' 
       };
-    } else if (email.includes('instructor')) {
+    } else if (email.includes('instructor') || email === 'instructor@university.edu') {
       return { 
         user: mockUsers.instructor, 
         token: 'mock-instructor-token'
       };
-    } else if (email.includes('secretary')) {
+    } else if (email.includes('secretary') || email === 'secretary@university.edu') {
       return { 
         user: mockUsers.secretary, 
         token: 'mock-secretary-token'

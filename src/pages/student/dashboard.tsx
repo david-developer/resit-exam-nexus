@@ -14,7 +14,7 @@ const StudentDashboard = () => {
   const { user } = useAuth();
 
   // Fetch student grades
-  const { data: grades, isLoading: gradesLoading } = useQuery({
+  const { data: gradesResponse, isLoading: gradesLoading } = useQuery({
     queryKey: ['studentGrades'],
     queryFn: studentAPI.getGrades,
     refetchOnWindowFocus: false,
@@ -27,15 +27,19 @@ const StudentDashboard = () => {
     refetchOnWindowFocus: false,
   });
 
+  // Ensure grades is an array
+  const grades = Array.isArray(gradesResponse) ? gradesResponse : [];
+  const resitExamsArray = Array.isArray(resitExams) ? resitExams : [];
+
   // Calculate days until next exam
   const calculateDaysUntilNextExam = () => {
-    if (!resitExams || resitExams.length === 0) return "No exams scheduled";
+    if (!resitExamsArray || resitExamsArray.length === 0) return "No exams scheduled";
     
     const today = new Date();
     let closestExam = null;
     let closestDays = Infinity;
     
-    resitExams.forEach((exam: any) => {
+    resitExamsArray.forEach((exam) => {
       const examDate = new Date(exam.examDate);
       const diffDays = Math.ceil((examDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
       
@@ -50,9 +54,9 @@ const StudentDashboard = () => {
 
   // Calculate statistics
   const stats = {
-    totalCourses: grades?.length || 0,
-    coursesWithResit: resitExams?.length || 0,
-    passingGrades: grades?.filter((g: any) => g.grade >= 55).length || 0,
+    totalCourses: grades.length || 0,
+    coursesWithResit: resitExamsArray.length || 0,
+    passingGrades: grades.filter((g) => g.grade >= 55).length || 0,
     daysUntilNextExam: calculateDaysUntilNextExam(),
   };
 
@@ -102,7 +106,7 @@ const StudentDashboard = () => {
               <CardContent>
                 {grades && grades.length > 0 ? (
                   <div className="space-y-2">
-                    {grades.slice(0, 5).map((grade: any) => (
+                    {grades.slice(0, 5).map((grade) => (
                       <div 
                         key={grade.id} 
                         className="flex items-center justify-between p-2 border-b last:border-0"
@@ -125,9 +129,9 @@ const StudentDashboard = () => {
                 <CardTitle>Upcoming Resit Exams</CardTitle>
               </CardHeader>
               <CardContent>
-                {resitExams && resitExams.length > 0 ? (
+                {resitExamsArray && resitExamsArray.length > 0 ? (
                   <div className="space-y-2">
-                    {resitExams.slice(0, 5).map((exam: any) => (
+                    {resitExamsArray.slice(0, 5).map((exam) => (
                       <div 
                         key={exam.id} 
                         className="flex items-center justify-between p-2 border-b last:border-0"

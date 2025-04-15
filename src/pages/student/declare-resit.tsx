@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -27,10 +26,9 @@ import {
 } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { InformationCircle } from 'lucide-react';
+import { Info } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-// Define form schema
 const formSchema = z.object({
   courseId: z.string({
     required_error: "Please select a course",
@@ -41,21 +39,18 @@ const StudentDeclareResitPage = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch student grades to find eligible courses for resit
   const { data: grades, isLoading: gradesLoading } = useQuery({
     queryKey: ['studentGrades'],
     queryFn: studentAPI.getGrades,
     refetchOnWindowFocus: false,
   });
 
-  // Fetch existing resit exams
   const { data: resitExams, isLoading: resitExamsLoading } = useQuery({
     queryKey: ['studentResitExams'],
     queryFn: studentAPI.getResitExams,
     refetchOnWindowFocus: false,
   });
 
-  // Mutation for declaring a resit exam
   const declareResitMutation = useMutation({
     mutationFn: studentAPI.declareResit,
     onSuccess: () => {
@@ -63,7 +58,6 @@ const StudentDeclareResitPage = () => {
         title: "Resit declared successfully",
         description: "You have been registered for the resit exam.",
       });
-      // Invalidate queries to refresh data
       queryClient.invalidateQueries({ queryKey: ['studentResitExams'] });
       form.reset();
     },
@@ -76,7 +70,6 @@ const StudentDeclareResitPage = () => {
     },
   });
 
-  // Initialize form
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -84,14 +77,11 @@ const StudentDeclareResitPage = () => {
     },
   });
 
-  // Filter eligible courses for resit
   const getEligibleCourses = () => {
     if (!grades) return [];
     
-    // Get already registered resit course IDs
     const registeredResitIds = resitExams ? resitExams.map((exam: any) => exam.courseId) : [];
     
-    // Find failed courses that are not already registered for resit
     return grades.filter((grade: any) => {
       return grade.grade < 55 && !registeredResitIds.includes(grade.courseId);
     });
@@ -163,7 +153,7 @@ const StudentDeclareResitPage = () => {
                 </Form>
               ) : (
                 <Alert>
-                  <InformationCircle className="h-4 w-4" />
+                  <Info className="h-4 w-4" />
                   <AlertTitle>No eligible courses</AlertTitle>
                   <AlertDescription>
                     You don't have any courses eligible for resit exams, or you've already registered for all possible resits.

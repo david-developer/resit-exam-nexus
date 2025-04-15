@@ -86,72 +86,117 @@ api.interceptors.response.use(
   }
 );
 
+// Mock users for testing
+const mockUsers = {
+  student: {
+    id: 'student-1',
+    name: 'John Student',
+    email: 'student@university.edu',
+    role: 'student'
+  },
+  instructor: {
+    id: 'instructor-1',
+    name: 'Jane Instructor',
+    email: 'instructor@university.edu',
+    role: 'instructor'
+  },
+  secretary: {
+    id: 'secretary-1',
+    name: 'Alex Secretary',
+    email: 'secretary@university.edu',
+    role: 'secretary'
+  }
+};
+
 // Auth API
 export const authAPI = {
   login: async (email: string, password: string) => {
-    const response = await api.post('/login', { email, password });
-    return response.data;
+    console.log('Mock login with:', email);
+    
+    // Simple logic to return mock user based on email
+    if (email.includes('student')) {
+      return { 
+        user: mockUsers.student, 
+        token: 'mock-student-token' 
+      };
+    } else if (email.includes('instructor')) {
+      return { 
+        user: mockUsers.instructor, 
+        token: 'mock-instructor-token'
+      };
+    } else if (email.includes('secretary')) {
+      return { 
+        user: mockUsers.secretary, 
+        token: 'mock-secretary-token'
+      };
+    }
+    
+    // If no match, throw error to simulate failed login
+    throw new Error('Invalid email or password');
   },
 };
 
 // Student API
 export const studentAPI = {
   getGrades: async () => {
-    const response = await api.get('/my-grades');
-    return response.data;
+    return [
+      { id: 'course1', courseName: 'Mathematics', grade: 78 },
+      { id: 'course2', courseName: 'Physics', grade: 65 },
+      { id: 'course3', courseName: 'Computer Science', grade: 92 },
+      { id: 'course4', courseName: 'Chemistry', grade: 45 },
+      { id: 'course5', courseName: 'History', grade: 81 }
+    ];
   },
   getResitExams: async () => {
-    const response = await api.get('/my-resit-exams');
-    return response.data;
+    return [
+      { id: 'resit1', courseName: 'Chemistry', examDate: '2025-05-15', location: 'Room A101' },
+      { id: 'resit2', courseName: 'Physics', examDate: '2025-05-20', location: 'Room B203' }
+    ];
   },
   declareResit: async (courseId: string) => {
-    const response = await api.post('/declare-resit', { courseId });
-    return response.data;
+    return { success: true, message: 'Resit declared successfully' };
   },
   getSchedule: async (filename: string) => {
-    const response = await api.get(`/schedule/${filename}`, {
-      responseType: 'blob'
-    });
-    return response.data;
+    // Mock blob response - in a real app, this would be a file
+    return new Blob(['Mock exam schedule data'], { type: 'application/pdf' });
   }
 };
 
 // Instructor API
 export const instructorAPI = {
   getResitStats: async () => {
-    const response = await api.get('/resit-stats');
-    return response.data;
+    return {
+      totalResits: 24,
+      coursesWithResits: 5,
+      studentsRegistered: 18,
+      averageScore: 45
+    };
   },
   submitGrade: async (data: { courseId: string, studentId: string, grade: number }) => {
-    const response = await api.post('/submit-grade', data);
-    return response.data;
+    return { success: true, message: 'Grade submitted successfully' };
   },
   updateResitDetails: async (data: any) => {
-    const response = await api.post('/resit-details', data);
-    return response.data;
+    return { success: true, message: 'Resit details updated successfully' };
   },
   getResitParticipants: async (courseId: string) => {
-    const response = await api.get(`/resit-registrations/${courseId}`);
-    return response.data;
+    return [
+      { id: 'student1', name: 'Alice Johnson', email: 'alice@university.edu', grade: 48 },
+      { id: 'student2', name: 'Bob Smith', email: 'bob@university.edu', grade: 42 },
+      { id: 'student3', name: 'Charlie Brown', email: 'charlie@university.edu', grade: 50 }
+    ];
   }
 };
 
 // Secretary API
 export const secretaryAPI = {
   uploadSchedule: async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    const response = await api.post('/upload-schedule', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data;
+    return { success: true, message: 'Schedule uploaded successfully', filename: 'spring_2025.pdf' };
   },
   getScheduleFiles: async () => {
-    const response = await api.get('/schedules');
-    return response.data;
+    return [
+      { id: 'file1', name: 'Fall 2024 Exam Schedule', filename: 'fall_2024.pdf', uploadDate: '2024-08-15' },
+      { id: 'file2', name: 'Spring 2025 Exam Schedule', filename: 'spring_2025.pdf', uploadDate: '2024-12-20' }
+    ];
   }
 };
 

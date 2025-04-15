@@ -92,19 +92,19 @@ const mockUsers = {
     id: 'student-1',
     name: 'John Student',
     email: 'student@university.edu',
-    role: 'student'
+    role: 'student' as 'student'
   },
   instructor: {
     id: 'instructor-1',
     name: 'Jane Instructor',
     email: 'instructor@university.edu',
-    role: 'instructor'
+    role: 'instructor' as 'instructor'
   },
   secretary: {
     id: 'secretary-1',
     name: 'Alex Secretary',
     email: 'secretary@university.edu',
-    role: 'secretary'
+    role: 'secretary' as 'secretary'
   }
 };
 
@@ -169,7 +169,43 @@ export const instructorAPI = {
       totalResits: 24,
       coursesWithResits: 5,
       studentsRegistered: 18,
-      averageScore: 45
+      averageScore: 45,
+      // Add these missing properties that are used in the dashboard
+      courses: [
+        {
+          id: 'course1',
+          name: 'Advanced Mathematics',
+          code: 'MATH401',
+          totalStudents: 45,
+          passRate: 78,
+          resitRegistered: 8,
+          gradeSubmissionDeadline: '2025-05-20'
+        },
+        {
+          id: 'course2',
+          name: 'Quantum Physics',
+          code: 'PHYS302',
+          totalStudents: 32,
+          passRate: 65,
+          resitRegistered: 10,
+          gradeSubmissionDeadline: '2025-05-25'
+        },
+        {
+          id: 'course3',
+          name: 'Data Structures',
+          code: 'CS201',
+          totalStudents: 58,
+          passRate: 82,
+          resitRegistered: 6,
+          gradeSubmissionDeadline: '2025-05-15'
+        }
+      ],
+      coursePerformance: [
+        { term: 'Fall 2023', avgGrade: 75, passRate: 82 },
+        { term: 'Spring 2024', avgGrade: 72, passRate: 79 },
+        { term: 'Fall 2024', avgGrade: 68, passRate: 73 },
+        { term: 'Spring 2025', avgGrade: 71, passRate: 76 }
+      ]
     };
   },
   submitGrade: async (data: { courseId: string, studentId: string, grade: number }) => {
